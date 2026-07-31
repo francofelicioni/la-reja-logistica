@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { QuoteDraftProvider } from "@/components/context/QuoteDraftContext";
 import { SegmentProvider } from "@/components/context/SegmentContext";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 
@@ -31,8 +32,10 @@ export default function RootLayout({
     <html lang="es-AR" className={spaceGrotesk.variable}>
       <body className="font-display antialiased bg-white text-brand-dark">
         <SegmentProvider>
-          {children}
-          <FloatingWhatsApp />
+          <QuoteDraftProvider>
+            {children}
+            <FloatingWhatsApp />
+          </QuoteDraftProvider>
         </SegmentProvider>
       </body>
     </html>

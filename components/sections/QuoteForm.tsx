@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { useQuoteDraft } from "@/components/context/QuoteDraftContext";
 import { useSegment } from "@/components/context/SegmentContext";
 import { content, SEGMENT_LABELS, type Segment } from "@/lib/content";
-import { ORIGIN } from "@/lib/zones";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import ZoneSelect from "@/components/ui/ZoneSelect";
 import Container from "@/components/ui/Container";
@@ -11,7 +11,6 @@ import Container from "@/components/ui/Container";
 type FormState = {
   nombre: string;
   segmento: Segment;
-  destino: string;
   paquete: string;
   volumen: string;
   telefono: string;
@@ -20,7 +19,6 @@ type FormState = {
 const initialState = (segment: Segment): FormState => ({
   nombre: "",
   segmento: segment,
-  destino: "",
   paquete: "",
   volumen: "",
   telefono: "",
@@ -28,8 +26,13 @@ const initialState = (segment: Segment): FormState => ({
 
 export default function QuoteForm() {
   const { segment } = useSegment();
+  const { destino, setDestino } = useQuoteDraft();
   const [form, setForm] = useState<FormState>(() => initialState(segment));
   const { cta } = content[segment];
+
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, segmento: segment }));
+  }, [segment]);
 
   const update = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -42,8 +45,7 @@ export default function QuoteForm() {
       "Hola! Quiero cotizar un envío con La Reja Envíos Express.",
       `Nombre / empresa: ${form.nombre || "-"}`,
       `Segmento: ${SEGMENT_LABELS[form.segmento]}`,
-      `Origen: ${ORIGIN}`,
-      `Destino: ${form.destino || "-"}`,
+      `Destino: ${destino || "-"}`,
       `Tamaño/peso estimado: ${form.paquete || "-"}`,
       `Volumen semanal estimado: ${form.volumen || "-"}`,
       `WhatsApp de contacto: ${form.telefono || "-"}`,
@@ -81,7 +83,7 @@ export default function QuoteForm() {
             />
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
             <label htmlFor="segmento" className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60">
               Segmento
             </label>
@@ -101,23 +103,14 @@ export default function QuoteForm() {
             </select>
           </div>
 
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60">
-              Origen
-            </label>
-            <div className="mt-1 rounded-xl border border-brand-dark/10 bg-brand-light/60 px-4 py-3 text-brand-dark">
-              {ORIGIN}
-            </div>
-          </div>
-
           <div className="sm:col-span-2">
             <label htmlFor="destino" className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60">
               Destino
             </label>
             <ZoneSelect
               id="destino"
-              value={form.destino}
-              onChange={(zona) => setForm((prev) => ({ ...prev, destino: zona }))}
+              value={destino}
+              onChange={setDestino}
               className="mt-1"
             />
           </div>

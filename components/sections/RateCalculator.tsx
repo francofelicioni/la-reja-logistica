@@ -1,34 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { useSegment } from "@/components/context/SegmentContext";
+import { useQuoteDraft } from "@/components/context/QuoteDraftContext";
 import { content } from "@/lib/content";
 import {
-  ORIGIN,
   RATES_EFFECTIVE_DATE,
   MIN_WEEKLY_VOLUME,
   formatARS,
   getZonePrice,
   getWholesaleZonePrice,
 } from "@/lib/zones";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
 import ZoneSelect from "@/components/ui/ZoneSelect";
 import Container from "@/components/ui/Container";
 
 export default function RateCalculator() {
   const { segment } = useSegment();
-  const [zona, setZona] = useState("");
-  const { calculator } = content[segment];
+  const { destino, setDestino } = useQuoteDraft();
+  const { calculator, cta } = content[segment];
 
-  const price = zona ? getZonePrice(zona) : undefined;
-  const wholesalePrice = zona ? getWholesaleZonePrice(zona) : undefined;
+  const price = destino ? getZonePrice(destino) : undefined;
+  const wholesalePrice = destino ? getWholesaleZonePrice(destino) : undefined;
   const isEmpresa = segment === "empresa";
-
-  const whatsappHref = buildWhatsAppLink(
-    `Hola! Quiero cotizar envíos de alto volumen (150+ semanales) desde ${ORIGIN}${
-      zona ? ` hacia ${zona}` : ""
-    }.`
-  );
 
   return (
     <section className="bg-brand-light py-16 sm:py-24" id="calculadora">
@@ -38,30 +30,19 @@ export default function RateCalculator() {
             {calculator.title}
           </h2>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60">
-                Origen
-              </label>
-              <div className="mt-1 rounded-xl border border-brand-dark/10 bg-brand-light/60 px-4 py-3 text-brand-dark">
-                {ORIGIN}
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="zona-calculadora"
-                className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60"
-              >
-                Destino
-              </label>
-              <ZoneSelect
-                id="zona-calculadora"
-                value={zona}
-                onChange={setZona}
-                className="mt-1"
-              />
-            </div>
+          <div className="mt-8">
+            <label
+              htmlFor="zona-calculadora"
+              className="text-xs font-semibold uppercase tracking-wide text-brand-dark/60"
+            >
+              Destino
+            </label>
+            <ZoneSelect
+              id="zona-calculadora"
+              value={destino}
+              onChange={setDestino}
+              className="mt-1"
+            />
           </div>
 
           <div className="mt-8 text-center">
@@ -82,24 +63,20 @@ export default function RateCalculator() {
                     semanales.
                   </p>
                   <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="#cotizar"
                     className="mt-4 inline-block rounded-full bg-brand-dark px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
                   >
-                    Cotizar por WhatsApp
+                    {cta.label}
                   </a>
                 </div>
               ) : (
                 <>
                   <p className="text-sm text-brand-dark/70">{calculator.note}</p>
                   <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="#cotizar"
                     className="mt-4 inline-block rounded-full bg-brand-dark px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
                   >
-                    Cotizar por WhatsApp
+                    {cta.label}
                   </a>
                 </>
               )
@@ -109,9 +86,23 @@ export default function RateCalculator() {
                   {formatARS(price)}
                 </p>
                 <p className="mt-1 text-xs text-brand-dark/60">+ IVA</p>
+                <a
+                  href="#cotizar"
+                  className="mt-4 inline-block rounded-full bg-brand-dark px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
+                >
+                  {cta.label}
+                </a>
               </div>
             ) : (
-              <p className="text-sm text-brand-dark/60">{calculator.note}</p>
+              <>
+                <p className="text-sm text-brand-dark/60">{calculator.note}</p>
+                <a
+                  href="#cotizar"
+                  className="mt-4 inline-block rounded-full bg-brand-dark px-8 py-3 text-sm font-bold text-white transition-transform hover:scale-105"
+                >
+                  {cta.label}
+                </a>
+              </>
             )}
           </div>
 

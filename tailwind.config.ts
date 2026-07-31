@@ -34,6 +34,10 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 0 0 rgba(88, 204, 208, 0.45)" },
           "50%": { boxShadow: "0 0 0 10px rgba(88, 204, 208, 0)" },
         },
+        "grow-down": {
+          "0%": { transform: "scaleY(0)" },
+          "100%": { transform: "scaleY(1)" },
+        },
       },
       animation: {
         "bounce-slow": "bounce 2.5s infinite",
@@ -41,6 +45,7 @@ const config: Config = {
         "scale-in": "scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
         "flow-progress": "flow-progress 1.4s ease-out forwards",
         "pulse-ring": "pulse-ring 2.5s ease-in-out infinite",
+        "grow-down": "grow-down 0.5s ease-out forwards",
       },
     },
   },
