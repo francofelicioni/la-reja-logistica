@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { useSegment } from "@/components/context/SegmentContext";
-import { content } from "@/lib/content";
+import { content, type Segment } from "@/lib/content";
 import SegmentToggle from "@/components/ui/SegmentToggle";
 import Container from "@/components/ui/Container";
+
+const SEGMENTS: Segment[] = ["individual", "empresa"];
 
 export default function Hero() {
   const { segment } = useSegment();
@@ -24,15 +26,31 @@ export default function Hero() {
 
         <SegmentToggle className="mt-8" />
 
-        <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-brand-dark/70">
-          {hero.eyebrow}
-        </p>
-        <h1 className="mt-3 max-w-3xl text-balance text-4xl font-bold leading-tight text-brand-dark sm:text-5xl lg:text-6xl">
-          {hero.title}
-        </h1>
-        <p className="mt-5 max-w-xl text-balance text-base text-brand-dark/80 sm:text-lg">
-          {hero.subtitle}
-        </p>
+        <div className="mt-6 grid w-full justify-items-center [&>*]:col-start-1 [&>*]:row-start-1">
+          {SEGMENTS.map((s) => {
+            const { eyebrow, title, subtitle } = content[s].hero;
+            const isActive = s === segment;
+            const TitleTag = isActive ? "h1" : "div";
+
+            return (
+              <div
+                key={s}
+                className={`flex w-full flex-col items-center ${isActive ? "z-10" : "invisible"}`}
+                aria-hidden={!isActive}
+              >
+                <p className="text-sm font-semibold uppercase tracking-wide text-brand-dark/70">
+                  {eyebrow}
+                </p>
+                <TitleTag className="mt-3 max-w-3xl text-balance text-4xl font-bold leading-tight text-brand-dark sm:text-5xl lg:text-6xl">
+                  {title}
+                </TitleTag>
+                <p className="mt-5 max-w-xl text-balance text-base text-brand-dark/80 sm:text-lg">
+                  {subtitle}
+                </p>
+              </div>
+            );
+          })}
+        </div>
 
         <a
           href="#cotizar"
