@@ -13,7 +13,6 @@ import {
 import ZoneSelect from "@/components/ui/ZoneSelect";
 import SegmentToggle from "@/components/ui/SegmentToggle";
 import Container from "@/components/ui/Container";
-import { CALCULATOR_SEGMENT_LABELS } from "@/lib/content";
 
 export default function RateCalculator() {
   const { segment } = useSegment();
@@ -33,10 +32,7 @@ export default function RateCalculator() {
           </h2>
 
           <div className="mt-6 flex justify-center">
-            <SegmentToggle
-              variant="light"
-              labels={CALCULATOR_SEGMENT_LABELS}
-            />
+            <SegmentToggle variant="light" />
           </div>
 
           <div className="mt-8">
