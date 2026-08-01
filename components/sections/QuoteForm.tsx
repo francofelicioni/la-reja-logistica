@@ -1,38 +1,43 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useQuoteDraft } from "@/components/context/QuoteDraftContext";
 import { useSegment } from "@/components/context/SegmentContext";
 import { content, SEGMENT_LABELS, type Segment } from "@/lib/content";
+import {
+  formatARS,
+  getZonePrice,
+  getWholesaleZonePrice,
+} from "@/lib/zones";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import ZoneSelect from "@/components/ui/ZoneSelect";
 import Container from "@/components/ui/Container";
 
 type FormState = {
   nombre: string;
-  segmento: Segment;
   paquete: string;
   volumen: string;
   telefono: string;
 };
 
-const initialState = (segment: Segment): FormState => ({
+const initialState: FormState = {
   nombre: "",
-  segmento: segment,
   paquete: "",
   volumen: "",
   telefono: "",
-});
+};
 
 export default function QuoteForm() {
-  const { segment } = useSegment();
+  const { segment, setSegment } = useSegment();
   const { destino, setDestino } = useQuoteDraft();
-  const [form, setForm] = useState<FormState>(() => initialState(segment));
+  const [form, setForm] = useState<FormState>(initialState);
   const { cta } = content[segment];
 
-  useEffect(() => {
-    setForm((prev) => ({ ...prev, segmento: segment }));
-  }, [segment]);
+  const estimatedPrice = destino
+    ? segment === "empresa"
+      ? getWholesaleZonePrice(destino)
+      : getZonePrice(destino)
+    : undefined;
 
   const update = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -44,12 +49,17 @@ export default function QuoteForm() {
     const message = [
       "Hola! Quiero cotizar un envío con La Reja Envíos Express.",
       `Nombre / empresa: ${form.nombre || "-"}`,
-      `Segmento: ${SEGMENT_LABELS[form.segmento]}`,
+      `Segmento: ${SEGMENT_LABELS[segment]}`,
       `Destino: ${destino || "-"}`,
+      estimatedPrice !== undefined
+        ? `Tarifa estimada: ${formatARS(estimatedPrice)} + IVA`
+        : null,
       `Tamaño/peso estimado: ${form.paquete || "-"}`,
       `Volumen semanal estimado: ${form.volumen || "-"}`,
       `WhatsApp de contacto: ${form.telefono || "-"}`,
-    ].join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
   };
@@ -89,13 +99,8 @@ export default function QuoteForm() {
             </label>
             <select
               id="segmento"
-              value={form.segmento}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  segmento: e.target.value as Segment,
-                }))
-              }
+              value={segment}
+              onChange={(e) => setSegment(e.target.value as Segment)}
               className="mt-1 w-full rounded-xl border border-brand-dark/15 bg-white px-4 py-3 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40"
             >
               <option value="individual">{SEGMENT_LABELS.individual}</option>
@@ -113,6 +118,18 @@ export default function QuoteForm() {
               onChange={setDestino}
               className="mt-1"
             />
+            {estimatedPrice !== undefined && (
+              <p className="mt-2 text-sm text-brand-dark/70">
+                Tarifa estimada:{" "}
+                <span className="font-semibold text-brand-dark">
+                  {formatARS(estimatedPrice)}
+                </span>{" "}
+                + IVA
+                {segment === "empresa" && (
+                  <span className="text-brand-dark/50"> (tarifa preferencial)</span>
+                )}
+              </p>
+            )}
           </div>
 
           <div>

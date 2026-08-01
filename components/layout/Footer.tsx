@@ -71,12 +71,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 overflow-hidden rounded-2xl border border-white/10 sm:mt-12">
+        <div className="mt-10 overflow-hidden rounded-2xl  sm:mt-12">
           <iframe
             title="Ubicación de La Reja Envíos Express"
             src={GOOGLE_MAPS_EMBED_URL}
-            className="aspect-[16/9] w-full min-h-[220px] border-0 sm:min-h-[280px]"
-            loading="lazy"
+            className="aspect-[16/9] w-full min-h-[220px] border-2 sm:min-h-[280px] sm:w-1/2 mx-auto border border-white/10 rounded-2xl"
             referrerPolicy="no-referrer-when-downgrade"
             allowFullScreen
           />

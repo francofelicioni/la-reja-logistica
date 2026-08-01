@@ -11,7 +11,9 @@ import {
   getWholesaleZonePrice,
 } from "@/lib/zones";
 import ZoneSelect from "@/components/ui/ZoneSelect";
+import SegmentToggle from "@/components/ui/SegmentToggle";
 import Container from "@/components/ui/Container";
+import { CALCULATOR_SEGMENT_LABELS } from "@/lib/content";
 
 export default function RateCalculator() {
   const { segment } = useSegment();
@@ -29,6 +31,13 @@ export default function RateCalculator() {
           <h2 className="text-center text-2xl font-bold text-brand-dark sm:text-3xl">
             {calculator.title}
           </h2>
+
+          <div className="mt-6 flex justify-center">
+            <SegmentToggle
+              variant="light"
+              labels={CALCULATOR_SEGMENT_LABELS}
+            />
+          </div>
 
           <div className="mt-8">
             <label

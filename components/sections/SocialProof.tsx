@@ -106,7 +106,7 @@ export default function SocialProof() {
                 los que operamos todos los días.
               </p>
               <div
-                className={`mt-6 inline-flex items-center gap-4 rounded-2xl bg-brand-light/60 px-5 py-4 ring-1 ring-brand-dark/5 ${
+                className={`mt-6 w-full border-black/10 border inline-flex items-center justify-center gap-4 rounded-2xl bg-brand-light/60 px-5 py-4 ring-1 ring-brand-dark/5 ${
                   isInView ? "animate-fade-in-up opacity-0" : "opacity-0"
                 }`}
                 style={{ animationDelay: "240ms" }}
